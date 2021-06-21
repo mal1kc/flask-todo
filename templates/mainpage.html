@@ -1,0 +1,64 @@
+{% extends 'layout.html' %} {% block title %} my todos {% endblock title %} 
+{%block body %}
+<h3>todo list</h3>
+<hr />
+<form action="/add" method="post">
+  <div class="form-group">
+    <label for="formGroupExampleInput">todo title</label>
+    <input
+      type="text"
+      class="form-control"
+      name="title"
+      id="formGroupExampleInput"
+      placeholder="todo title..."
+    /><br />
+
+    <label for="content">content</label>
+    <textarea
+      class="form-control"
+      rows="5"
+      id="content"
+      name="content"
+    ></textarea
+    ><br />
+    <button type="submit" class="btn btn-primary">add to todos</button>
+  </div>
+  <hr />
+  {% if todos %}
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">todo title</th>
+        <th scope="col">state</th>
+        <th scope="col">created date</th>
+        <th scope="col">update status</th>
+        <th scope="col">delete todo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for todo in todos %}
+      <tr>
+        <td><a href="/detail/{{todo.id}}">{{todo.title}}</a></td>
+        {% if todo.complete %}
+        <td>completed</td>
+        {% else %}
+        <td>not completed</td>
+        {% endif %}
+        <td>{{todo.created_date | date }}</td>
+        <td>
+          <a href="/complete/{{todo.id}}" class="btn btn-warning"
+            >{% if not todo.complete %} completed {% else %} not completed {%
+            endif %}</a
+          >
+        </td>
+        <td><a href="/delete/{{todo.id}}" class="btn btn-danger">delete</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="alert alert-danger" role="alert">you dont have any todos</div>
+  {% endif %}
+</form>
+
+{% endblock body %}
