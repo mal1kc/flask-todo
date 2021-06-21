@@ -8,9 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///%s"%(os.path.abspath(os.path.dirname(os.path.dirname(__file__))+'/db/todo.db'),)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///%s"(('path/to/db/file.db'),)
 
-# app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///todo.db'
 
 db = SQLAlchemy(app=app)
 app.secret_key = "secret key"
@@ -41,7 +40,7 @@ def login_required(f):
         if "logged_in" in session:
             return f(*args, **kwargs)
         else:
-            flash(message="bu sayfayı görüntülemek için giriş yapınız",
+            flash(message="you need to login for see this page ,please wait while redirecting to login page",
                   category="danger")
             return redirect(url_for("login"))
     return decorated_function
@@ -104,7 +103,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash(message="başarıyla kayıt oldunuz .....", category="success")
+        flash(message="you succesfully signed up  .....", category="success")
 
         return redirect(url_for("login"))
     else:
@@ -122,11 +121,11 @@ def login():
                 session["user_id"] = user.id
                 return redirect(url_for("index"))
             else:
-                flash(message="hatalı bir parola girdiniz", category="danger")
+                flash(message="incorrect password", category="danger")
                 return redirect(url_for("login"))
         else:
             flash(
-                message="böyle bir kullanıcı bulumuyor aşağıdan kayıt olabilirsiniz", category="danger")
+                message=f"no user named {user}", category="danger")
             return redirect(url_for("register"))
     else:
         return render_template("login.html")
@@ -154,7 +153,7 @@ def main():
         db.create_all()
         app.run(debug=True)
     except Exception as err:
-        print("yine olmadı")
+        print("error probaly with sqlite db location")
         print(err)
         print("----------------------------------------------------------------------")
         print(app.config["SQLALCHEMY_DATABASE_URI"])
